@@ -1,4 +1,4 @@
-import os
+import os 
 import pytesseract
 from PIL import Image
 
