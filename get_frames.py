@@ -23,6 +23,8 @@ def play_n_get_frames(file_path, playback_speed=100):
     cap.set(cv2.CAP_PROP_FPS, frame_rate * playback_speed)
 
     frame_count = 0
+    which_frame = 0
+    desired_frame_interval = 500
     frames_folder = 'frames'
     if not os.path.exists(frames_folder):
         os.makedirs(frames_folder)
@@ -33,20 +35,12 @@ def play_n_get_frames(file_path, playback_speed=100):
         if ret:
             cv2.imshow('Frame', frame)
             key = cv2.waitKey(1) & 0xFF
-            if key == ord('s'):
-                frame_count += 1
-                frame_filename = os.path.join(os.path.abspath(frames_folder), f"frame_{frame_count}.png")
+            frame_count += 1
+            if frame_count % desired_frame_interval == 0 or ((frame_count+100) % desired_frame_interval) == 0:
+                frame_filename = os.path.join(frames_folder, f"frame_{which_frame}.png")
                 cv2.imwrite(frame_filename, frame)
-                print(f"Saved frame as {frame_filename}")
-            if key == ord('b'):
-                frame_count += 1
-                frame_filename = os.path.join(os.path.abspath(frames_folder), f"frame_{frame_count}.png")
-
-                x, y, w, h = 432, 0, 640, 360
-                cropped_frame = frame[y:y+h, x:x+w]
-
-                cv2.imwrite(frame_filename, cropped_frame)
-                print(f"Saved frame as {frame_filename}")
+                print(f"Saved frame {frame_count} as {frame_filename}")
+                which_frame += 1
             if key == ord('q'):
                 break
         else:
